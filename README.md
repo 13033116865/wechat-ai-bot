@@ -1,387 +1,66 @@
-# WeChat AI Bot
+# 微信助手（本地部署，带 UI）
 
-A powerful AI-powered WeChat bot that brings intelligent conversation capabilities to your WeChat ecosystem. This bot leverages advanced language models to provide natural, context-aware responses to user messages.
+这个项目提供一个**本地网页 UI**（聊天窗口），默认对接你电脑上的 **Ollama**（可选）。你可以把整个文件夹放到桌面，在浏览器里使用。
 
-## 📋 Table of Contents
+## 你会得到什么
 
-- [Overview](#overview)
-- [Features](#features)
-- [System Requirements](#system-requirements)
-- [Installation](#installation)
-- [Quick Start Guide](#quick-start-guide)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [API Integration](#api-integration)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
+- **UI 界面**：运行后打开浏览器即可聊天（默认端口 `7860`）
+- **本地 LLM（可选）**：默认走 `.env` 的 `LLM_HOST/LLM_MODEL`（适配 Ollama）
+- **微信接入（可选）**：提供 `itchat` 桥接脚本；兼容性不稳定，失败不影响 UI 使用
 
-## Overview
+## 快速部署到桌面（Linux）
 
-WeChat AI Bot is a modern chatbot solution designed specifically for WeChat platform integration. It combines WeChat's messaging infrastructure with state-of-the-art AI language models to create an intelligent, responsive assistant capable of handling diverse conversation scenarios including customer service, information queries, and general conversation.
-
-### Key Benefits
-
-- **Seamless Integration**: Direct integration with WeChat's official API
-- **AI-Powered Responses**: Leverages advanced language models for intelligent replies
-- **High Performance**: Optimized for low-latency responses
-- **Scalable Architecture**: Designed to handle multiple concurrent conversations
-- **Easy Deployment**: Simple setup and configuration process
-
-## Features
-
-### 🤖 AI Capabilities
-
-- **Natural Language Processing**: Understands context and intent from user messages
-- **Multi-language Support**: Handles conversations in multiple languages
-- **Contextual Awareness**: Maintains conversation history for better response quality
-- **Intent Recognition**: Automatically identifies user intent and routes appropriately
-
-### 💬 Messaging Features
-
-- **Text Messages**: Full support for text-based conversations
-- **Media Handling**: Process and respond to images, files, and multimedia content
-- **Message Routing**: Intelligent routing of messages to appropriate handlers
-- **Typing Indicators**: Shows when bot is processing responses
-- **Message Formatting**: Rich text formatting and structured responses
-
-### ⚙️ System Features
-
-- **Auto-reply**: Automatic responses to messages during specified hours
-- **Rate Limiting**: Built-in protection against message flooding
-- **Error Handling**: Graceful error handling with user-friendly messages
-- **Logging**: Comprehensive logging for monitoring and debugging
-- **Admin Controls**: Administrative interface for bot management
-
-### 📊 Advanced Capabilities
-
-- **Analytics**: Track bot performance and user engagement metrics
-- **Custom Workflows**: Define custom response patterns and behaviors
-- **Integration Ready**: Easy integration with external services and APIs
-- **Configuration Management**: Flexible configuration system
-
-## System Requirements
-
-### Software Requirements
-
-- **Python**: 3.8 or higher
-- **Operating System**: Linux, macOS, or Windows
-- **Node.js**: 14.0 or higher (for certain components)
-
-### Runtime Requirements
-
-- **Memory**: Minimum 2GB RAM, recommended 4GB+
-- **Storage**: 500MB free disk space
-- **Network**: Stable internet connection with low latency
-- **Bandwidth**: 1 Mbps or higher recommended
-
-### Dependencies
-
-- WeChat Official API credentials
-- An AI language model API key (OpenAI, Hugging Face, or similar)
-- Database (PostgreSQL recommended, SQLite supported)
-- Redis (optional, for caching and sessions)
-
-### Development Requirements (Optional)
-
-- Docker (for containerized deployment)
-- Git (for version control)
-- pip/poetry (Python package managers)
-
-## Installation
-
-### 1. Prerequisites Setup
-
-Ensure you have Python 3.8+ installed:
+在项目根目录执行：
 
 ```bash
-python --version
+chmod +x scripts/install_to_desktop.sh
+./scripts/install_to_desktop.sh
 ```
 
-### 2. Clone the Repository
+脚本会把文件复制到桌面：`~/Desktop/WeChatAssistant`（或你的系统桌面目录），并生成一个桌面启动图标：`WeChatAssistant.desktop`。
+
+如果你的桌面环境提示“未信任/禁止启动”，通常需要：**右键该图标 → 允许启动/设为可信**。
+
+## 启动 UI（推荐）
+
+进入桌面目录后：
 
 ```bash
-git clone https://github.com/13033116865/wechat-ai-bot.git
-cd wechat-ai-bot
-```
-
-### 3. Create Virtual Environment
-
-```bash
-# On macOS/Linux
-python -m venv venv
-source venv/bin/activate
-
-# On Windows
-python -m venv venv
-venv\Scripts\activate
-```
-
-### 4. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 5. Configure Environment Variables
-
-```bash
-# Copy example environment file
 cp .env.example .env
-
-# Edit .env with your configuration
-nano .env  # or use your preferred editor
-```
-
-### 6. Initialize Database
-
-```bash
-python manage.py migrate
-```
-
-### 7. Create Admin User
-
-```bash
-python manage.py createsuperuser
-```
-
-## Quick Start Guide
-
-### Step 1: Set Up WeChat Credentials
-
-1. Register for a WeChat Official Account at [mp.weixin.qq.com](https://mp.weixin.qq.com)
-2. Get your AppID and AppSecret from the admin console
-3. Add the following to your `.env` file:
-
-```env
-WECHAT_APP_ID=your_app_id_here
-WECHAT_APP_SECRET=your_app_secret_here
-WECHAT_TOKEN=your_token_here
-WECHAT_ENCODING_AES_KEY=your_aes_key_here
-```
-
-### Step 2: Configure AI Model
-
-Add your AI provider credentials to `.env`:
-
-```env
-# For OpenAI
-OPENAI_API_KEY=sk-your-key-here
-OPENAI_MODEL=gpt-3.5-turbo
-
-# Or for other providers
-AI_PROVIDER=openai  # options: openai, huggingface, anthropic
-```
-
-### Step 3: Set Server Configuration
-
-```env
-SERVER_HOST=0.0.0.0
-SERVER_PORT=8000
-DEBUG=False
-LOG_LEVEL=INFO
-```
-
-### Step 4: Start the Bot
-
-```bash
-# Development mode
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 python app.py
-
-# Production mode with Gunicorn
-gunicorn -w 4 -b 0.0.0.0:8000 app:app
 ```
 
-### Step 5: Set WeChat Webhook
+启动后在浏览器打开：`http://127.0.0.1:7860`
 
-1. Go to WeChat Official Account admin panel
-2. Navigate to Basic Settings → Server Configuration
-3. Set the callback URL to: `https://your-domain.com/wechat/callback`
-4. Set the token (must match WECHAT_TOKEN in .env)
-5. Click "Submit" to verify
+### （可选）启用 Ollama
 
-### Step 6: Test the Bot
+如果你已经安装 Ollama，并且本机能访问 `http://localhost:11434`，UI 会自动调用它生成回复。
 
-Send a message to your WeChat Official Account and verify the bot responds appropriately.
-
-## Configuration
-
-### Environment Variables Reference
+常用配置（写到 `.env`）：
 
 ```env
-# WeChat Configuration
-WECHAT_APP_ID=                          # Your WeChat App ID
-WECHAT_APP_SECRET=                      # Your WeChat App Secret
-WECHAT_TOKEN=                           # Webhook token
-WECHAT_ENCODING_AES_KEY=                # Message encryption key
-
-# AI Provider Configuration
-AI_PROVIDER=openai                      # AI provider (openai, huggingface, etc.)
-OPENAI_API_KEY=                         # OpenAI API key
-OPENAI_MODEL=gpt-3.5-turbo             # Model to use
-
-# Server Configuration
-SERVER_HOST=0.0.0.0                    # Server host
-SERVER_PORT=8000                       # Server port
-SERVER_URL=https://your-domain.com     # Public server URL
-DEBUG=False                            # Debug mode
-LOG_LEVEL=INFO                         # Logging level
-
-# Database Configuration
-DATABASE_URL=postgresql://user:pass@localhost/dbname
-DATABASE_POOL_SIZE=5
-
-# Cache Configuration (Optional)
-REDIS_URL=redis://localhost:6379      # Redis connection
-
-# Bot Behavior
-BOT_TIMEOUT=30                         # Response timeout in seconds
-MAX_MESSAGE_LENGTH=2000                # Max message length
-RATE_LIMIT_ENABLED=True               # Enable rate limiting
-RATE_LIMIT_PER_MINUTE=10              # Messages per minute per user
+LLM_HOST=http://localhost:11434
+LLM_MODEL=mistral
 ```
 
-### Configuration Files
+## （可选）微信桥接（itchat）
 
-- `config.yaml`: Main configuration file
-- `.env`: Environment variables (create from `.env.example`)
-- `logging.config`: Logging configuration
-
-## Usage
-
-### Basic Message Handling
-
-The bot automatically processes incoming WeChat messages and generates responses using the configured AI model.
-
-### Admin Dashboard
-
-Access the admin dashboard at `https://your-domain.com/admin` to:
-
-- Monitor bot conversations
-- View analytics and statistics
-- Manage user preferences
-- Configure response settings
-- View logs and errors
-
-### Command Syntax
-
-Use special commands to control bot behavior:
-
-```
-/help              - Show available commands
-/status            - Check bot status
-/config            - View current configuration
-/clear_history     - Clear conversation history
-/reset             - Reset bot state
-```
-
-## API Integration
-
-### Webhook Endpoint
-
-**POST** `/wechat/callback`
-
-Receives and processes incoming WeChat messages.
-
-### Message Format
-
-```json
-{
-  "FromUserName": "user_id",
-  "ToUserName": "bot_id",
-  "CreateTime": 1234567890,
-  "MsgType": "text",
-  "Content": "User message",
-  "MsgId": "1234567890"
-}
-```
-
-### Response Format
-
-```json
-{
-  "ToUserName": "user_id",
-  "FromUserName": "bot_id",
-  "CreateTime": 1234567890,
-  "MsgType": "text",
-  "Content": "Bot response",
-  "MsgId": "1234567890"
-}
-```
-
-## Troubleshooting
-
-### Common Issues
-
-#### Bot not responding
-
-1. Check if the server is running: `curl http://localhost:8000/health`
-2. Verify WeChat credentials in `.env`
-3. Check logs: `tail -f logs/app.log`
-4. Ensure webhook URL is correctly configured
-
-#### Message timeout
-
-1. Check AI provider connection
-2. Increase `BOT_TIMEOUT` in `.env`
-3. Monitor server resources (CPU, memory)
-4. Check network connectivity
-
-#### Database connection errors
-
-1. Verify DATABASE_URL is correct
-2. Ensure database service is running
-3. Check database permissions
-4. Review logs for specific error messages
-
-### Debug Mode
-
-Enable debug logging for troubleshooting:
-
-```env
-DEBUG=True
-LOG_LEVEL=DEBUG
-```
-
-### Support
-
-For issues and questions:
-- Check existing GitHub issues
-- Create a new issue with detailed information
-- Include logs and configuration (without sensitive data)
-
-## Contributing
-
-We welcome contributions! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Commit your changes: `git commit -am 'Add feature'`
-4. Push to the branch: `git push origin feature/your-feature`
-5. Submit a pull request
-
-### Development Setup
+仅当你确认 `itchat` 在你的环境可用时再尝试：
 
 ```bash
-# Install development dependencies
-pip install -r requirements-dev.txt
-
-# Run tests
-pytest
-
-# Run linter
-flake8 .
-
-# Format code
-black .
+pip install -r requirements-wechat.txt
+python -m wechat_assistant.wechat_itchat
 ```
 
-## License
+如果登录失败/不兼容：这是预期情况之一，**不影响 UI 功能**。
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 配置说明
 
----
+参考 `.env.example`。常用项：
 
-**Last Updated**: 2025-12-24
-
-For the latest updates and documentation, visit [GitHub Repository](https://github.com/13033116865/wechat-ai-bot)
+- **ENABLE_AI_REPLY**：是否启用 LLM（默认 `true`）
+- **MAX_RESPONSE_LENGTH**：回复最大字符数（默认 `200`）
+- **GRADIO_SERVER_NAME/PORT**：UI 监听地址/端口（默认 `127.0.0.1:7860`）
