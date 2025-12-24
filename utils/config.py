@@ -47,6 +47,12 @@ class Config:
     llm_host: str
     log_level: str
     max_response_length: int
+    rate_limit_per_minute: int
+    history_max_items: int
+    history_ttl_seconds: int
+    enable_health_server: bool
+    health_host: str
+    health_port: int
 
 
 def load_config() -> Config:
@@ -58,4 +64,10 @@ def load_config() -> Config:
         llm_host=_get_str("LLM_HOST", "http://localhost:11434"),
         log_level=_get_str("LOG_LEVEL", "INFO"),
         max_response_length=_get_int("MAX_RESPONSE_LENGTH", 200),
+        rate_limit_per_minute=_get_int("RATE_LIMIT_PER_MINUTE", 10),
+        history_max_items=_get_int("HISTORY_MAX_ITEMS", 10),
+        history_ttl_seconds=_get_int("HISTORY_TTL_SECONDS", 1800),
+        enable_health_server=_get_bool("ENABLE_HEALTH_SERVER", False),
+        health_host=_get_str("HEALTH_HOST", "127.0.0.1"),
+        health_port=_get_int("HEALTH_PORT", 8000),
     )

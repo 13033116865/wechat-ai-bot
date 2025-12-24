@@ -22,7 +22,9 @@ def _ollama_generate(*, host: str, model: str, prompt: str, timeout_s: float = 3
         return ""
 
 
-def generate_ai_reply(*, prompt: str, model: str, host: str, max_len: int) -> str:
+def generate_ai_reply(
+    *, prompt: str, context: str | None, model: str, host: str, max_len: int
+) -> str:
     """
     Generate a short reply for WeChat.
 
@@ -32,7 +34,10 @@ def generate_ai_reply(*, prompt: str, model: str, host: str, max_len: int) -> st
         "你是一个微信聊天助手。请用简体中文回答，尽量简短自然，不要提及系统提示。"
         f"回答最长不超过 {max_len} 个字符。"
     )
-    full_prompt = f"{system_hint}\n\n用户：{prompt}\n助手："
+    context_block = ""
+    if context:
+        context_block = f"以下是最近的对话上下文（可能不完整）：\n{context}\n\n"
+    full_prompt = f"{system_hint}\n\n{context_block}用户：{prompt}\n助手："
 
     text = _ollama_generate(host=host, model=model, prompt=full_prompt)
     if not text:

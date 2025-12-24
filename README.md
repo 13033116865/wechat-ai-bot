@@ -16,6 +16,9 @@
 - **本地 LLM（Ollama）**：`LLM_HOST` + `LLM_MODEL`
 - **回复长度限制**：`MAX_RESPONSE_LENGTH`
 - **彩色日志**：`LOG_LEVEL`
+- **每用户限流**：`RATE_LIMIT_PER_MINUTE`
+- **短期上下文**：`HISTORY_MAX_ITEMS` / `HISTORY_TTL_SECONDS`
+- **健康检查**：`ENABLE_HEALTH_SERVER`（`GET /health`）
 
 ## 快速开始
 
@@ -62,9 +65,30 @@ python app.py
 
 首次运行会在控制台显示二维码，扫码登录后即可开始自动回复。
 
+## 命令
+
+- `/help`：查看帮助
+- `/status`：查看当前状态（含模型/限流/内存占用）
+- `/clear_history`：清空当前会话的短期上下文
+
+## 健康检查（可选）
+
+启用后会在后台线程启动一个 HTTP 服务：
+
+- `GET /health`：返回 JSON（含 CPU/内存等基本指标）
+
+相关环境变量：
+
+- `ENABLE_HEALTH_SERVER=true`
+- `HEALTH_HOST=127.0.0.1`
+- `HEALTH_PORT=8000`
+
 ## 目录结构
 
 - `app.py`：入口，itchat 消息处理与回复
 - `utils/config.py`：从环境变量读取配置
 - `utils/llm.py`：Ollama 客户端（`/api/generate`）
 - `utils/logging_config.py`：彩色日志配置
+- `utils/history.py`：内存版短期上下文
+- `utils/rate_limit.py`：简单限流
+- `utils/server.py`：aiohttp `/health`
