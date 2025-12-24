@@ -70,6 +70,37 @@ python app.py
 - `/help`：查看帮助
 - `/status`：查看当前状态（含模型/限流/内存占用）
 - `/clear_history`：清空当前会话的短期上下文
+- `/stats`：近 7 天消息统计（需开启 SQLite 日志）
+
+## 白名单（可选）
+
+如果你只希望机器人回复特定联系人，可以在 `.env` 里配置：
+
+```env
+ALLOW_USERNAMES=wxid_xxx,wxid_yyy
+```
+
+这里的值对应 itchat 消息里的 `FromUserName`（通常是 `wxid_...`）。留空表示允许所有人。
+
+## 群聊（可选）
+
+默认**不**在群聊里回复。开启后，只有当消息以指定前缀开头才会触发回复（避免刷屏）：
+
+```env
+ENABLE_GROUP_CHAT=true
+GROUP_CHAT_TRIGGER_PREFIX=/bot 
+```
+
+例如群里发送：`/bot 你好` 才会触发回复。
+
+## SQLite 日志与统计
+
+默认会把“收到的消息/回复”写入 SQLite（用于 `/stats`）：
+
+```env
+ENABLE_SQLITE_LOG=true
+DB_PATH=data/bot.sqlite3
+```
 
 ## 健康检查（可选）
 

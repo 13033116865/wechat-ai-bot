@@ -53,6 +53,11 @@ class Config:
     enable_health_server: bool
     health_host: str
     health_port: int
+    allow_usernames: str
+    enable_group_chat: bool
+    group_chat_trigger_prefix: str
+    enable_sqlite_log: bool
+    db_path: str
 
 
 def load_config() -> Config:
@@ -70,4 +75,9 @@ def load_config() -> Config:
         enable_health_server=_get_bool("ENABLE_HEALTH_SERVER", False),
         health_host=_get_str("HEALTH_HOST", "127.0.0.1"),
         health_port=_get_int("HEALTH_PORT", 8000),
+        allow_usernames=_get_str("ALLOW_USERNAMES", ""),
+        enable_group_chat=_get_bool("ENABLE_GROUP_CHAT", False),
+        group_chat_trigger_prefix=_get_str("GROUP_CHAT_TRIGGER_PREFIX", "/bot "),
+        enable_sqlite_log=_get_bool("ENABLE_SQLITE_LOG", True),
+        db_path=_get_str("DB_PATH", "data/bot.sqlite3"),
     )
