@@ -56,8 +56,25 @@ tar -C "$SRC" \
   --exclude "./.ruff_cache" \
   -cf - . | tar -C "$DEST" -xf -
 
+chmod +x "$DEST/scripts/run_ui.sh" || true
+
+# Create a desktop launcher (Linux)
+LAUNCHER="$DESKTOP_DIR/WeChatAssistant.desktop"
+cat > "$LAUNCHER" <<EOF
+[Desktop Entry]
+Type=Application
+Name=微信助手（本地UI）
+Comment=在浏览器中打开本地聊天界面
+Terminal=true
+Exec=bash -lc 'cd "$DEST" && ./scripts/run_ui.sh'
+Path=$DEST
+Categories=Utility;
+EOF
+chmod +x "$LAUNCHER" || true
+
 echo
 echo "已复制到桌面：$DEST"
+echo "已生成桌面启动图标：$LAUNCHER（如需：右键→允许启动 / 设为可信）"
 echo "下一步："
 echo "  cd \"$DEST\""
 echo "  cp .env.example .env"

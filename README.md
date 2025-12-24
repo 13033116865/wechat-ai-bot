@@ -17,7 +17,9 @@ chmod +x scripts/install_to_desktop.sh
 ./scripts/install_to_desktop.sh
 ```
 
-脚本会把文件复制到桌面：`~/Desktop/WeChatAssistant`（或你的系统桌面目录），然后按提示进入目录并启动。
+脚本会把文件复制到桌面：`~/Desktop/WeChatAssistant`（或你的系统桌面目录），并生成一个桌面启动图标：`WeChatAssistant.desktop`。
+
+如果你的桌面环境提示“未信任/禁止启动”，通常需要：**右键该图标 → 允许启动/设为可信**。
 
 ## 启动 UI（推荐）
 
